@@ -34,7 +34,7 @@ final class FocusCompanion {
 
     init(now: @escaping () -> Double = { ProcessInfo.processInfo.systemUptime },
          permission: @escaping () -> Bool = { CGPreflightScreenCaptureAccess() },
-         hasKey: @escaping () -> Bool = { Keychain.get(.openai) != nil },
+         hasKey: @escaping () -> Bool = { Keychain.get(.openai) != nil || FreeAI.isEnabled }, // FreeAI
          screenUnlocked: @escaping () -> Bool = {
             let session = CGSessionCopyCurrentDictionary() as? [String: Any]
             return session?["CGSSessionScreenIsLocked"] as? Bool != true && session?["kCGSessionOnConsoleKey"] as? Bool != false

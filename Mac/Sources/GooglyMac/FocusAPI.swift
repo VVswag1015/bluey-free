@@ -55,12 +55,14 @@ enum FocusAPI {
         ]
     }
     static func classify(_ screen: ScreenSnapshot, session: FocusSession, idle: Double) async throws -> FocusDecision {
-        try FocusDecision.decode(await post("decisions", decisionBody(jpeg: screen.jpeg, session: session, idle: idle,
+        if FreeAI.isEnabled { return try await FreeAI.classify(screen, session: session, idle: idle) } // FreeAI
+        return try FocusDecision.decode(await post("decisions", decisionBody(jpeg: screen.jpeg, session: session, idle: idle,
             app: screen.app, screenText: screen.lines.prefix(140).map(\.line.text).joined(separator: "\n"))))
     }
 
     struct Nudge { var message: String; var target: Target? }
     static func nudge(_ screen: ScreenSnapshot, task: String) async throws -> Nudge {
+        if FreeAI.isEnabled { return try await FreeAI.nudge(screen, task: task) } // FreeAI
         let schema: [String: Any] = ["type": "object", "additionalProperties": false,
             "properties": ["message": ["type": "string"], "target_id": ["type": ["string", "null"]],
                            "target_quote": ["type": ["string", "null"]]],
