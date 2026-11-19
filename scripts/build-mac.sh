@@ -14,6 +14,10 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$(swift build -c release --show-bin-path)/GooglyMac" "$APP/Contents/MacOS/GooglyMac"
 cp Mac/Info.plist "$APP/Contents/Info.plist"
 cp Shared/Fonts/*.ttf "$APP/Contents/Resources/"
+# App icon: turn the iconset into an .icns. If this step ever fails the app just gets the generic icon.
+if [[ -d Mac/Resources/Bluey.iconset ]]; then
+  iconutil -c icns Mac/Resources/Bluey.iconset -o "$APP/Contents/Resources/Bluey.icns" || echo "Skipping app icon"
+fi
 
 # Sign with your Apple Development certificate when there is one, so macOS remembers the
 # Screen Recording and Microphone permissions across rebuilds. Otherwise sign ad hoc.

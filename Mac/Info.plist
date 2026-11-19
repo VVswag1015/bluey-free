@@ -8,6 +8,8 @@
 	<string>Bluey</string>
 	<key>CFBundleIdentifier</key>
 	<string>co.visionairy.googly.mac</string>
+	<key>CFBundleIconFile</key>
+	<string>Bluey</string>
 	<key>CFBundleExecutable</key>
 	<string>GooglyMac</string>
 	<key>CFBundlePackageType</key>

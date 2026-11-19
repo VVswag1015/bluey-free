@@ -14,12 +14,14 @@ targets:
     platform: iOS
     sources:
       - path: iOS/Sources
+      - path: iOS/Resources   # app icon
       - path: Shared
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: co.visionairy.googly.phone
         PRODUCT_NAME: Bluey
         TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         GENERATE_INFOPLIST_FILE: YES
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: NF73NSV867
