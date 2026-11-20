@@ -11,6 +11,7 @@
 		0F5614BE9A55A8498E40F5F1 /* IBMPlexMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C8AB3F441CA03CDA07FAE72 /* IBMPlexMono-Medium.ttf */; };
 		162BD56C1F6191020071D2A2 /* BlobShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F3C44C342D6E869E6E3B4E /* BlobShape.swift */; };
 		229BAA56B4ED395457C442E0 /* QRPairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E88A21B39D4CF71F73A5737 /* QRPairingView.swift */; };
+		4C9D8695FE4292819CE72A2C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE32061E66846BE545B3CE34 /* Assets.xcassets */; };
 		68F797C6A1D3EC7A83674C2A /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A762C0174AFF849BAD1A700 /* PairingView.swift */; };
 		6C5FF10BDE711139D00DB85A /* Fredoka.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D0EEE8F996B2F95804C1ECF8 /* Fredoka.ttf */; };
 		6E03A7EBF9AAFFE4AC87ADE4 /* GooglyLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F71F206238433A6F710528B /* GooglyLink.swift */; };
@@ -57,7 +58,8 @@
 		B44C98F6A89143BA9C926480 /* MacLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacLink.swift; sourceTree = "<group>"; };
 		C95CBBB828E99EC09708E98E /* GooglyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooglyApp.swift; sourceTree = "<group>"; };
 		D0EEE8F996B2F95804C1ECF8 /* Fredoka.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fredoka.ttf; sourceTree = "<group>"; };
-		E884B5117C895A0439FDFE12 /* GooglyEyes.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GooglyEyes.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E884B5117C895A0439FDFE12 /* Bluey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bluey.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EE32061E66846BE545B3CE34 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FFB5A3FC752388C5F4235248 /* FocusSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSession.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -78,6 +80,7 @@
 		4F61868F579B512B69F537A4 = {
 			isa = PBXGroup;
 			children = (
+				D56BF917F527A81FCFA6CF71 /* Resources */,
 				E8E2F33C9E110392983FDDDF /* Shared */,
 				8F41397BC1AEAB53CDE84BB3 /* Sources */,
 				554494C1002555E490E37EB6 /* Products */,
@@ -87,7 +90,7 @@
 		554494C1002555E490E37EB6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E884B5117C895A0439FDFE12 /* GooglyEyes.app */,
+				E884B5117C895A0439FDFE12 /* Bluey.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -111,6 +114,15 @@
 			);
 			name = Sources;
 			path = iOS/Sources;
+			sourceTree = "<group>";
+		};
+		D56BF917F527A81FCFA6CF71 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				EE32061E66846BE545B3CE34 /* Assets.xcassets */,
+			);
+			name = Resources;
+			path = iOS/Resources;
 			sourceTree = "<group>";
 		};
 		E8E2F33C9E110392983FDDDF /* Shared */ = {
@@ -144,7 +156,7 @@
 			packageProductDependencies = (
 			);
 			productName = GooglyEyes;
-			productReference = E884B5117C895A0439FDFE12 /* GooglyEyes.app */;
+			productReference = E884B5117C895A0439FDFE12 /* Bluey.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -154,16 +166,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					B9CA7ABB7F3F613763C3DF65 = {
-						DevelopmentTeam = NF73NSV867;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
 			buildConfigurationList = FF71141EA9D22D07B4D3C0E4 /* Build configuration list for PBXProject "GooglyEyes" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -173,6 +183,7 @@
 			mainGroup = 4F61868F579B512B69F537A4;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
+			productRefGroup = 554494C1002555E490E37EB6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -186,6 +197,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C9D8695FE4292819CE72A2C /* Assets.xcassets in Resources */,
 				6C5FF10BDE711139D00DB85A /* Fredoka.ttf in Resources */,
 				0F5614BE9A55A8498E40F5F1 /* IBMPlexMono-Medium.ttf in Resources */,
 				9C57F9AFA362287C2B93142E /* IBMPlexMono-Regular.ttf in Resources */,
@@ -355,14 +367,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NF73NSV867;
+				DEVELOPMENT_TEAM = ZB6XFZ27U7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.visionairy.googly.phone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vvswag1015.bluey.phone;
 				PRODUCT_NAME = Bluey;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -375,14 +387,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NF73NSV867;
+				DEVELOPMENT_TEAM = ZB6XFZ27U7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.visionairy.googly.phone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vvswag1015.bluey.phone;
 				PRODUCT_NAME = Bluey;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
