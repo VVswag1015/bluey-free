@@ -39,6 +39,7 @@ targets:
         NSLocalNetworkUsageDescription: Bluey finds the Mac app on your Wi-Fi so the character can look where it points.
         NSCameraUsageDescription: Bluey scans a private pairing code on your Mac to securely connect.
         NSMicrophoneUsageDescription: Talk to your blueberry. He listens while he's awake (double tap him to wake him up or put him to sleep).
+        NSSpeechRecognitionUsageDescription: Bluey turns what you say into text so he can understand you.
         NSBonjourServices:
           - _googly._tcp
         UIAppFonts:

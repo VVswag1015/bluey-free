@@ -22,6 +22,7 @@
 		89CA80F59236155E52CDA9D9 /* VoiceTurnBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9523CAD3450502FE203C1BBD /* VoiceTurnBuffer.swift */; };
 		9C57F9AFA362287C2B93142E /* IBMPlexMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0EAD8A3C72D3899AD5CD2AA8 /* IBMPlexMono-Regular.ttf */; };
 		A3D88EE98BFEE3386A2C66DF /* BlueyAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1510156B478E99D7C4446DCA /* BlueyAppView.swift */; };
+		A40DE506268B2FC01E38DE2D /* FreeSpeech.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF4280EB270141E1B8F105EE /* FreeSpeech.swift */; };
 		B7F0853D97ECC4C28D0F6986 /* FocusViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAEED7339E96003AE49BEC7 /* FocusViews.swift */; };
 		C2D2BC58460F12FB0D562BB7 /* LiveVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD953582717D49F21FCD734 /* LiveVoice.swift */; };
 		C54C1E0F76ECB8F94A9AEE70 /* FocusSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFB5A3FC752388C5F4235248 /* FocusSession.swift */; };
@@ -55,6 +56,7 @@
 		AA3AAA80221D679C8EAAE925 /* FaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceView.swift; sourceTree = "<group>"; };
 		AB333D12D3F4C506B3E49505 /* IBMPlexSans.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = IBMPlexSans.ttf; sourceTree = "<group>"; };
 		ABAEED7339E96003AE49BEC7 /* FocusViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusViews.swift; sourceTree = "<group>"; };
+		AF4280EB270141E1B8F105EE /* FreeSpeech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeSpeech.swift; sourceTree = "<group>"; };
 		B44C98F6A89143BA9C926480 /* MacLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacLink.swift; sourceTree = "<group>"; };
 		C95CBBB828E99EC09708E98E /* GooglyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooglyApp.swift; sourceTree = "<group>"; };
 		D0EEE8F996B2F95804C1ECF8 /* Fredoka.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fredoka.ttf; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				AA3AAA80221D679C8EAAE925 /* FaceView.swift */,
 				5028F9B110929B5CAC427465 /* FocusClient.swift */,
 				ABAEED7339E96003AE49BEC7 /* FocusViews.swift */,
+				AF4280EB270141E1B8F105EE /* FreeSpeech.swift */,
 				C95CBBB828E99EC09708E98E /* GooglyApp.swift */,
 				2CD953582717D49F21FCD734 /* LiveVoice.swift */,
 				B44C98F6A89143BA9C926480 /* MacLink.swift */,
@@ -221,6 +224,7 @@
 				F171BD7BAF58935750650B4D /* FocusClient.swift in Sources */,
 				C54C1E0F76ECB8F94A9AEE70 /* FocusSession.swift in Sources */,
 				B7F0853D97ECC4C28D0F6986 /* FocusViews.swift in Sources */,
+				A40DE506268B2FC01E38DE2D /* FreeSpeech.swift in Sources */,
 				CD8A48CB04D56A4BEF47D6AB /* GooglyApp.swift in Sources */,
 				6E03A7EBF9AAFFE4AC87ADE4 /* GooglyLink.swift in Sources */,
 				C2D2BC58460F12FB0D562BB7 /* LiveVoice.swift in Sources */,

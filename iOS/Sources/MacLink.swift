@@ -142,13 +142,13 @@ final class MacLink: ObservableObject {
     }
 
     /// Sends a request to the Mac and calls back with its reply (nil if the Mac went away).
-    func request(_ packet: Packet, _ done: @escaping (Packet?) -> Void) {
+    func request(_ packet: Packet, timeout: Double = 12, _ done: @escaping (Packet?) -> Void) {  // FreeVoice: optional longer wait
         guard let link, connected else { done(nil); return }
         var packet = packet
         let id = UUID().uuidString
         packet.callID = id
         waiting[id] = done
-        DispatchQueue.main.asyncAfter(deadline: .now() + 12) { [weak self] in self?.waiting.removeValue(forKey: id)?(nil) }
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { [weak self] in self?.waiting.removeValue(forKey: id)?(nil) }
         link.send(packet)
     }
 

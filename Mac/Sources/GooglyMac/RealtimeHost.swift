@@ -34,6 +34,7 @@ final class RealtimeHost {
     func handle(_ packet: Packet, reply: @escaping (Packet) -> Void) {
         switch packet.command {
         case "realtimeToken":
+            if FreeAI.isEnabled { reply(Packet(command: "realtimeToken", callID: packet.callID, text: "free")); return }  // FreeVoice
             Task { @MainActor in
                 do {
                     let token = try await Self.mintToken(extra: self.focus?.current.flatMap { $0.status == .ended ? nil : "Current focus task: \($0.task). State: \($0.status.rawValue)." })
@@ -85,6 +86,9 @@ final class RealtimeHost {
             if !text.isEmpty { setSpeaking(true) }
         case "captionDone":
             showReply(packet.text ?? "")
+        case "voiceTurn":  // FreeVoice
+            let state = self.focus?.current.flatMap { $0.status == .ended ? nil : "Current focus task: \($0.task). State: \($0.status.rawValue)." }
+            FreeVoice.handle(packet, context: state, runTool: { name, arguments in await self.runTool(name, arguments: arguments).text }, reply: reply)
         case "tool":
             let previous = toolChain
             toolChain = Task { @MainActor in

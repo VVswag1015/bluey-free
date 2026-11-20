@@ -24,6 +24,10 @@ final class LiveVoice: NSObject, ObservableObject {
     private var toolNames: [String] = []
 
     static let model = "gpt-realtime-2.1"
+    /// Free voice (see the end of this file): asks the Mac's free AI. Calls back with its reply and whether he should sleep.
+    var askMac: ((String, @escaping (String?, Bool) -> Void) -> Void)?  // FreeVoice
+    fileprivate var freeMode = false  // FreeVoice
+    fileprivate let freeSpeech = FreeSpeech()  // FreeVoice
 
     /// Asks the Mac for a short-lived key. Calls back with nil on failure.
     var requestToken: ((@escaping (String?) -> Void) -> Void)?
@@ -120,7 +124,7 @@ final class LiveVoice: NSObject, ObservableObject {
                     DispatchQueue.main.async {
                         guard self.state == .waking else { return }
                         guard let token else { self.feedback = "Voice could not connect. Check the Mac and OpenAI key."; self.onCaption?(self.feedback, true); self.sleep(); return }
-                        self.connect(token)
+                        if token == "free" { self.startFree() } else { self.connect(token) }  // FreeVoice
                     }
                 }
             }
@@ -128,6 +132,7 @@ final class LiveVoice: NSObject, ObservableObject {
     }
 
     func sleep() {
+        freeSpeech.cancel(); freeMode = false  // FreeVoice
         let wasRunning = wantAwake || socket != nil
         wantAwake = false
         reconnecting = false
@@ -213,6 +218,7 @@ final class LiveVoice: NSObject, ObservableObject {
 
     /// You pressed and held the screen: what you say now is the question.
     func beginAsk() {
+        if freeMode { freeBeginAsk(); return }  // FreeVoice
         holding = true
         turnAudio.begin()
         awaitingTranscript = nil
@@ -231,6 +237,7 @@ final class LiveVoice: NSObject, ObservableObject {
     func endAsk() {
         guard holding else { return }
         holding = false
+        if freeMode { freeEndAsk(); return }  // FreeVoice
         guard socketReady else { askWhenReady = true; return }
         ask()
     }
@@ -507,6 +514,7 @@ final class LiveVoice: NSObject, ObservableObject {
         input.removeTap(onBus: 0)
         input.installTap(onBus: 0, bufferSize: 2400, format: inputFormat) { [weak self] buffer, _ in
             self?.recorder.append(buffer)
+            self?.freeSpeech.append(buffer)  // FreeVoice
             self?.sendMic(buffer)
         }
         player.volume = Float(volume)
@@ -615,5 +623,94 @@ final class LiveVoice: NSObject, ObservableObject {
                 self.finishIfQuiet()
             }
         }
+    }
+}
+
+// MARK: - Free voice (OPTIONAL: no OpenAI)
+// Used only when the Mac answers the voice request with "free" (Free AI is turned on in the Mac's menu).
+// Your speech becomes text on this phone, the Mac's free AI works out what you meant, and he replies in his bubble.
+// TO REMOVE: delete this block, FreeSpeech.swift, and the lines marked `// FreeVoice`.
+extension LiveVoice {
+    fileprivate func startFree() {
+        FreeSpeech.authorize { granted in
+            guard self.state == .waking, self.wantAwake else { return }
+            guard granted else {
+                self.feedback = "I need Speech Recognition. Turn it on for Bluey in the iPhone's Settings."
+                self.onCaption?(self.feedback, true); self.sleep(); return
+            }
+            guard self.freeSpeech.isAvailable else {
+                self.feedback = "Speech recognition isn't available right now. Try again in a moment."
+                self.onCaption?(self.feedback, true); self.sleep(); return
+            }
+            self.freeMode = true
+            self.askWhenReady = false
+            self.onSessionStart?()
+            self.chirp(syllables: 2)
+            if self.holding { self.setState(.asking); self.freeStartCapture() } else { self.setState(.listening) }
+        }
+    }
+
+    fileprivate func freeStartCapture() {
+        freeSpeech.onPartial = { [weak self] text in
+            guard let self, self.holding, self.freeMode else { return }
+            self.feedback = "Hearing: " + text
+        }
+        if !freeSpeech.begin() {
+            feedback = "Speech recognition isn't available right now."
+            onCaption?(feedback, true)
+            setState(.listening)
+        }
+    }
+
+    /// You pressed and held: start listening.
+    fileprivate func freeBeginAsk() {
+        holding = true
+        turnAudio.begin()
+        voiceRequest = UUID()  // anything still being worked out from an earlier question is dropped
+        feedback = "Listening… let go when you're done."
+        onCaption?("", false)  // clears his last bubble
+        if state == .listening || state == .speaking || state == .thinking { setState(.asking) }
+        freeStartCapture()
+    }
+
+    /// You let go: get the words, ask the Mac, show the reply.
+    fileprivate func freeEndAsk() {
+        let request = voiceRequest
+        setState(.thinking)
+        feedback = "Got it. Working out what you said…"
+        freeSpeech.finish { [weak self] text in
+            guard let self, self.voiceRequest == request, self.freeMode else { return }
+            self.freeSpeech.cancel()
+            let words = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !words.isEmpty else {
+                self.feedback = "I didn't hear a task. Hold Bluey while you say it."
+                self.onCaption?(self.feedback, true); self.setState(.listening); return
+            }
+            let item = UUID().uuidString
+            self.onUserTurn?(item, true)
+            self.onUserWords?(item, words, true)
+            self.feedback = "Heard: " + words
+            guard let askMac = self.askMac else { self.freeReply("The Mac isn't connected.", sleep: false); return }
+            askMac(words) { [weak self] reply, sleep in
+                DispatchQueue.main.async {
+                    guard let self, self.voiceRequest == request, self.freeMode else { return }
+                    self.freeReply(reply ?? "The Mac didn't answer. Is Bluey running on it?", sleep: sleep)
+                }
+            }
+        }
+    }
+
+    /// Shows his reply the same way a normal one appears: bubble on the Mac, a chirp here.
+    fileprivate func freeReply(_ text: String, sleep: Bool) {
+        let reply = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        transcript = reply
+        sleepAfterReply = sleep
+        feedback = reply
+        setState(.speaking)
+        chirp(syllables: min(max(reply.split(separator: " ").count, 3), 5))
+        onCaption?(reply, false)
+        onCaption?(reply, true)
+        onReply?(reply)
+        finishIfQuiet()
     }
 }

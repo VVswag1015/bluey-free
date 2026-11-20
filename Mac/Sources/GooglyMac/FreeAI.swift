@@ -95,7 +95,7 @@ enum FreeAI {
     }
 
     /// One OpenAI-style chat request. Returns the model's text.
-    private static func chat(_ messages: [[String: Any]], timeout: Double) async throws -> String {
+    static func chat(_ messages: [[String: Any]], timeout: Double) async throws -> String {  // FreeVoice shares this
         let c = load()
         var base = c.baseURL.trimmingCharacters(in: .whitespacesAndNewlines)
         while base.hasSuffix("/") { base.removeLast() }
@@ -273,9 +273,9 @@ extension AppDelegate {
         let alert = NSAlert()
         alert.messageText = "Free AI for focus checks"
         alert.informativeText = """
-        Optional. When on, focus checks and nudges use the AI below instead of OpenAI. Turn it off and Bluey works exactly as before.
+        Optional. When on, focus checks, nudges and voice use the AI below instead of OpenAI. Turn it off and Bluey works exactly as before.
 
-        Ollama runs on this Mac, so screenshots never leave it. Gemini's free tier sends them to Google, which says free-tier content may be used to improve its products. Pause focus before opening anything private.
+        Ollama runs on this Mac, so screenshots never leave it. Gemini's free tier sends screenshots, and what you say as text, to Google, which says free-tier content may be used to improve its products. Pause focus before opening anything private.
         """
 
         let enabled = NSButton(checkboxWithTitle: "Use this instead of OpenAI", target: nil, action: nil)

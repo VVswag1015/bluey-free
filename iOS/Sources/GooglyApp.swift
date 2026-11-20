@@ -131,6 +131,11 @@ struct RootView: View {
                 done(reply?.text ?? "The Mac didn't answer.", reply?.image)
             }
         }
+        live.askMac = { [link] words, done in  // FreeVoice
+            link.request(Packet(command: "voiceTurn", text: words), timeout: 90) { reply in
+                done(reply?.text, reply?.tool == "go_to_sleep")
+            }
+        }
         live.onSessionStart = { [store] in
             // Focus voice is ephemeral. Do not record meeting audio by default.
             store.start()
