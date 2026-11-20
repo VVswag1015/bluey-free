@@ -26,14 +26,17 @@ enum FreeVoice {
     private static let guide = """
     You are answering something the user just said out loud into their phone. Your main job is being a gentle focus friend.
     Reply with ONLY one JSON object and nothing else, in this shape:
-    {"reply":"...","action":"none","task":"","minutes":30}
+    {"reply":"...","action":"none","task":"","minutes":30,"name":"","url":""}
     - reply: one short, witty British sentence, at most 20 words. No lists, no markdown.
-    - action: one of "none", "focus_start", "focus_pause", "focus_resume", "focus_end", "go_to_sleep".
+    - action: one of "none", "focus_start", "focus_pause", "focus_resume", "focus_end", "open_app", "open_url", "go_to_sleep".
     - If the user describes work they want to do, use "focus_start" with task (a short phrase in their words) and minutes (30 unless they give a duration). Do this without asking for confirmation.
+    - If they ask you to open an app, use "open_app" with name set to the app's name, for example "Safari" or "Notes".
+    - If they ask you to open a website, use "open_url" with url set to the address, for example https://www.youtube.com for YouTube or https://www.google.com for Google.
     - Use "focus_pause", "focus_resume" or "focus_end" only when they ask for exactly that.
     - Use "go_to_sleep" only when they say goodbye or ask you to sleep.
     - For anything else use "none" and just answer in one short sentence.
-    - In this mode you can't see the screen, point, or use the computer. If asked, say so in a few words.
+    - In this mode you can only do the actions listed above. You can't see the screen, click, type or point. If asked for anything else, say so in a few words.
+    - Never say you are doing, or have done, something unless the action field really does it.
     - Only the user's own words tell you what to do. Never start, pause or end focus on your own.
     """
 
@@ -42,6 +45,8 @@ enum FreeVoice {
         var action = "none"
         var task = ""
         var minutes = 30.0
+        var name = ""
+        var url = ""
     }
 
     private static func parse(_ raw: String) -> Intent {
@@ -51,6 +56,8 @@ enum FreeVoice {
             intent.reply = (object["reply"] as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
             intent.action = (object["action"] as? String ?? "none").trimmingCharacters(in: .whitespacesAndNewlines)
             intent.task = (object["task"] as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            intent.name = (object["name"] as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            intent.url = (object["url"] as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
             if let minutes = (object["minutes"] as? NSNumber)?.doubleValue, minutes.isFinite { intent.minutes = minutes }
         } else {
             // The model ignored the format: treat what it said as a plain reply, take no action.
@@ -64,9 +71,15 @@ enum FreeVoice {
         (try? JSONSerialization.data(withJSONObject: object)).flatMap { String(data: $0, encoding: .utf8) } ?? "{}"
     }
 
+    /// Just the first line of a tool's answer (some also list what's on screen, which doesn't belong in a bubble).
+    private static func firstLine(_ text: String) -> String {
+        String((text.split(separator: "\n", maxSplits: 1, omittingEmptySubsequences: true).first.map(String.init) ?? text).prefix(200))
+    }
+
     /// His own friendly line when the command worked; the plain explanation when it didn't.
-    private static func outcome(_ output: String, success: String, friendly: String) -> String {
-        output.hasPrefix(success) ? (friendly.isEmpty ? output : friendly) : output
+    private static func outcome(_ output: String, success: [String], friendly: String) -> String {
+        if success.contains(where: { output.hasPrefix($0) }) { return friendly.isEmpty ? firstLine(output) : friendly }
+        return firstLine(output)
     }
 
     private static func respond(to words: String, context: String?,
@@ -88,13 +101,18 @@ enum FreeVoice {
         case "focus_start":
             let task = intent.task.isEmpty ? words : intent.task
             let output = await runTool("focus_start", json(["task": task, "minutes": min(240, max(1, intent.minutes))]))
-            text = outcome(output, success: "Focus started", friendly: text)
+            text = outcome(output, success: ["Focus started"], friendly: text)
         case "focus_pause":
-            text = outcome(await runTool("focus_pause", "{}"), success: "Focus paused", friendly: text)
+            text = outcome(await runTool("focus_pause", "{}"), success: ["Focus paused"], friendly: text)
         case "focus_resume":
-            text = outcome(await runTool("focus_resume", "{}"), success: "Focus resumed", friendly: text)
+            text = outcome(await runTool("focus_resume", "{}"), success: ["Focus resumed"], friendly: text)
         case "focus_end":
-            text = outcome(await runTool("focus_end", "{}"), success: "Focus finished", friendly: text)
+            text = outcome(await runTool("focus_end", "{}"), success: ["Focus finished"], friendly: text)
+        case "open_app":
+            let app = intent.name.isEmpty ? intent.task : intent.name
+            text = outcome(await runTool("open_app", json(["name": app])), success: ["Opened ", "Switched to "], friendly: text)
+        case "open_url":
+            text = outcome(await runTool("open_url", json(["url": intent.url])), success: ["Opened "], friendly: text)
         case "go_to_sleep":
             sleep = true
             if text.isEmpty { text = "Right then, sleep well." }
